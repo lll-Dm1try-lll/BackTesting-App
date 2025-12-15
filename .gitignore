@@ -16,4 +16,6 @@ venv/
 backtester/docs/_build/
 equity_curve.csv
 
+dist/
+backtesting_app.egg-info
 

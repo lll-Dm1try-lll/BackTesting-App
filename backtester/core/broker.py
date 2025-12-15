@@ -70,9 +70,17 @@ class Broker:
             self._cash -= cost
             new_qty = self._position_qty + qty
             if new_qty > 0:
-                self._entry_price = (self._entry_price * self._position_qty + price * qty) / new_qty
+                self._entry_price = (
+                    self._entry_price * self._position_qty + price * qty
+                ) / new_qty
             self._position_qty = new_qty
-            tr = Trade(dt=dt, side=TradeSide.BUY, price=price, qty=qty, commission=commission)
+            tr = Trade(
+                dt=dt,
+                side=TradeSide.BUY,
+                price=price,
+                qty=qty,
+                commission=commission,
+            )
             self._trades.append(tr)
             return tr
 
@@ -90,19 +98,38 @@ class Broker:
         if self._position_qty <= 0:
             self._position_qty = 0.0
             self._entry_price = 0.0
-        tr = Trade(dt=dt, side=TradeSide.SELL, price=price, qty=qty, commission=commission)
+        tr = Trade(
+            dt=dt,
+            side=TradeSide.SELL,
+            price=price,
+            qty=qty,
+            commission=commission,
+        )
         self._trades.append(tr)
         return tr
 
     def _desired_buy_qty(self, price: float, qty_hint: float) -> float:
+        """
+        Вычислить желаемое количество к покупке.
+
+        При qty_hint > 0 используем его как есть (с последующим
+        округлением по шагу лота). Иначе берём максимум возможного
+        количества на весь доступный кэш с учётом комиссии.
+        """
         if qty_hint > 0:
             qty = qty_hint
         else:
-            qty = self._cash / (price * (1.0 + self._commission_pct) + 1e-12)
+            denom = price * (1.0 + self._commission_pct)
+            if denom <= 0:
+                return 0.0
+            qty = self._cash / denom
         return self._round_qty(qty)
 
     def _shrink_qty_for_cash(self, price: float, qty: float) -> float:
-        while qty > 0 and price * qty * (1.0 + self._commission_pct) - self._cash > 1e-9:
+        while (
+            qty > 0
+            and price * qty * (1.0 + self._commission_pct) - self._cash > 1e-9
+        ):
             qty -= self._lot_size
         return self._round_qty(max(qty, 0.0))
 

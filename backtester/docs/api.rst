@@ -29,6 +29,11 @@ Core
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: backtester.core.analyzers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Strategies
 ----------
 
@@ -37,5 +42,9 @@ Strategies
    :undoc-members:
 
 .. automodule:: backtester.strategies.ma_cross
+   :members:
+   :undoc-members:
+
+.. automodule:: backtester.strategies.donchian_breakout
    :members:
    :undoc-members:

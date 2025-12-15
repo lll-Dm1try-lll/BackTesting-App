@@ -21,3 +21,4 @@ Backtester
    :maxdepth: 2
 
    api
+   performance
