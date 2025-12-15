@@ -32,6 +32,7 @@ jobs:
           python -m build
 
       - name: Publish to GitHub Packages
+        continue-on-error: true
         env:
           TWINE_USERNAME: ${{ github.actor }}
           TWINE_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
