@@ -1,0 +1,26 @@
+from __future__ import annotations
+
+from datetime import datetime
+from typing import Protocol
+
+from .types import Action
+
+
+class StrategyContext(Protocol):
+    """Read-only представление состояния для стратегии на одном баре."""
+
+    def position_size(self) -> float: ...
+    def cash(self) -> float: ...
+    def price(self, series: str = "close") -> float: ...
+    def time(self) -> datetime: ...
+    def index(self) -> int: ...
+    def equity(self) -> float: ...
+
+
+class Strategy(Protocol):
+    """Контракт торговой стратегии."""
+
+    name: str
+
+    def warmup(self) -> int: ...
+    def on_bar(self, ctx: StrategyContext) -> Action: ...
